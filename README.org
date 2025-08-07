@@ -1,0 +1,7 @@
+#+title: Github Readme file
+
+* Peter's Doom Emacs Config
+
+Please read the base [[file:config.org][config.org]]  file. This is a literate config. You can use org-babel-tangle to generate the [[file:config.el][config.el]] file automatically. Once you have done this once, there is code in place to auto-tangle on save.
+
+Note that prior to doing this, you should match your [[file:init.el][init.el]] and [[file:packages.el][packages.el]] file, as these load various packages that I depend on in my main config.
