@@ -1,0 +1,630 @@
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets. It is optional.
+(setq user-full-name "Peter Farr"
+      user-mail-address "farr.peterm@gmail.com")
+
+(setq org-directory "~/org")
+(setq org-agenda-files
+      '("~/org/calendar-beorg.org"
+        "~/org/reminders-beorg.org"))
+
+;; Weird bug with org-gtd bugging us about upgrading when we've always been on 3.0 This is how to turn the warning off
+(setq org-gtd-update-ack "3.0.0")
+
+(after! org-modern
+  ;; Customize the symbols used for headlines
+  (setq org-modern-hide-stars nil  ;; optional: show leading stars
+        org-modern-star '(("◉" "○" "●" "○" "●" "○" "●"))
+        org-modern-fold-icons
+        '((t . "▸")
+          (nil . "▾"))))
+
+;; Add a nice drop down carrot instead of the standard [..] when collapsed
+(after! org
+  (setq org-ellipsis " ▾"))
+
+;; Turn on olivetti mode which centers the content
+(add-hook 'org-mode-hook 'olivetti-mode)
+
+;; Org mode font settings
+(defun efs/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch :height 1.0)
+  (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+
+(add-hook 'org-mode-hook #'efs/org-font-setup)
+
+;; Disable line mode for some modes, including org mode.
+(dolist (mode '(org-mode-hook
+                term-mode-hook
+                vterm-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Org-habit
+(use-package! org-habit
+  :after org
+  :config
+  (setq org-habit-show-all-today t)
+  (setq org-habit-graph-column 60))
+
+;; Enforce that emacs uses the system default browser
+;; set with
+;; $ xdg-settings set default-web-browser firefox-developer-edition.desktop
+(setq browser-url-browser-function 'browse-url-default-browser)
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom:
+;;
+;; - `doom-font' -- the primary font to use
+;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;; - `doom-symbol-font' -- for symbols
+;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+;;
+;; See 'C-h v doom-font' for documentation and more examples of what they
+;; accept. For example:
+;;
+(setq doom-font (font-spec :family "Monaspace Neon" :size 16 :weight 'light)
+      doom-variable-pitch-font (font-spec :family "Cantarell" :size 17)
+      doom-serif-font (font-spec :family "Monaspace Xenon" :size 17))
+
+;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
+;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
+;; refresh your font settings. If Emacs still can't find your font, it likely
+;; wasn't installed correctly. Font issues are rarely Doom issues!
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+(setq doom-theme 'doom-oceanic-next)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
+
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;;
+;;   (after! PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+;; Syntax highlighting for rusjt
+(setq +tree-sitter-hl-enabled-modes '(rust-mode))
+(add-hook 'rust-mode-hook #'tree-sitter-mode)
+(add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+
+(setq lsp-enable-semantic-highlighting t)
+(add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+(add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
+
+;; Rust format on save.
+(defun my/rust-enable-format-on-save ()
+  (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+
+(add-hook 'rust-mode-hook #'my/rust-enable-format-on-save)
+
+;; Setup for magit forge with rumble gitlab instance
+(setq auth-sources '("~/.authinfo.gpg"))
+(after! forge
+  (require 'forge-gitlab)
+  (push '("git.rumble.work"           ; GITHOST in he remote URL
+          "gitlab.rumble.work/api/v4" ; APIHOST (your web instance + API path)
+          "gitlab.rumble.work"        ; WEBHOST (used for browsing)
+          forge-gitlab-repository)    ; CLASS
+        forge-alist))
+
+(use-package slack
+  :commands (slack-start)
+  :bind (("C-c S K" . slack-stop)
+         ("C-c S c" . slack-select-rooms)
+         ("C-c S u" . slack-select-unread-rooms)
+         ("C-c S U" . slack-user-select)
+         ("C-c S m" . slack-im-open)
+         ("C-c S s" . slack-search-from-messages)
+         ("C-c S J" . slack-jump-to-browser)
+         ("C-c S j" . slack-jump-to-app)
+         ("C-c S e" . slack-insert-emoji)
+         ("C-c S E" . slack-message-edit)
+         ("C-c S r" . slack-message-add-reaction)
+         ("C-c S t" . slack-thread-show-or-create)
+         ("C-c S g" . slack-message-redisplay)
+         ("C-c S G" . slack-conversations-list-update-quick)
+         ("C-c S q" . slack-quote-and-reply)
+         ("C-c S Q" . slack-quote-and-reply-with-link)
+         ("C-c S T" . slack-all-threads)
+         (:map slack-mode-map
+               (("@" . slack-message-embed-mention)
+                ("#" . slack-message-embed-channel)))
+         (:map slack-thread-message-buffer-mode-map
+               (("C-c '" . slack-message-write-another-buffer)
+                ("@" . slack-message-embed-mention)
+                ("#" . slack-message-embed-channel)))
+         (:map slack-message-buffer-mode-map
+               (("C-c '" . slack-message-write-another-buffer)))
+         (:map slack-message-compose-buffer-mode-map
+               (("C-c '" . slack-message-send-from-buffer)))
+         )
+  :config
+  (slack-register-team
+   :name "rumbleinc"
+   :token (auth-source-pick-first-password
+           :host "rumbleinc.slack.com"
+           :user "peter.farr@rumble.com")
+   :cookie (auth-source-pick-first-password
+            :host "rumbleinc.slack.com"
+            :user "peter.farr@rumble.com^cookie")
+   :full-and-display-names t
+   :default t
+   :subscribed-channels '(rumble-sso-auth))
+  (message "[slack] team registered ✅"))
+
+(use-package alert
+  :commands (alert)
+  :init
+  (setq alert-default-style 'notifier))
+
+;; Each path is relative to the path of the maildir you passed to mu
+(set-email-account! "farr.peterm@gmail"
+                    '((mu4e-sent-folder       . "/[Gmail].Sent Mail")
+                      (mu4e-drafts-folder       . "/[Gmail].Drafts")
+                      (mu4e-trash-folder       . "/[Gmail].Trash")
+                      (mu4e-refile-folder       . "/[Gmail].All Mail")
+                      (smtpmail-smtp-user     . "farr.peterm@gmail.com")
+                      (mu4e-compose-signature . "Best,\nPeter Farr"))
+                    t)
+
+;; don't need to run cleanup after indexing for gmail
+(setq mu4e-index-cleanup nil
+      ;; because gmail uses labels as folders we can use lazy check since
+      ;; messages don't really "move"
+      mu4e-index-lazy-check t)
+
+(setq ispell-program-name "hunspell")
+(setq ispell-dictionary "en_US")
+
+(setq
+ user-mail-address "farr.peterm@gmail.com"
+ user-full-name "Peter Farr"
+
+ message-send-mail-function 'smtpmail-send-it
+ send-mail-function 'smtpmail-send-it
+
+ smtpmail-stream-type 'starttls
+ smtpmail-smtp-server "smtp.gmail.com"
+ smtpmail-smtp-service 587
+
+ smtpmail-auth-supported '(login plain)
+ smtpmail-smtp-user "farr.peterm@gmail.com"
+
+ auth-sources '("~/.authinfo.gpg")
+
+ smtpmail-debug-info t)
+
+(setq epa-pinentry-mode 'loopback)
+(setenv "GPG_TTY" (getenv "TTY"))
+
+(defun my/toggle-file-split (filepath)
+  "Toggle horizontal split showing FILEPATH.
+If it's visible, close it. Otherwise, open in a horizontal split."
+  (interactive "fPath to file: ")
+  (let* ((fullpath (expand-file-name filepath))
+         (buf (or (find-buffer-visiting fullpath)
+                  (find-file-noselect fullpath)))
+         (win (get-buffer-window buf t))) ;; search all visible frames
+    (if win
+        (delete-window win)
+      (let ((new-win (split-window-below)))
+        (set-window-buffer new-win buf)
+        (select-window new-win)))))
+
+(add-to-list 'load-path "~/.config/emacs/lisp") ;; adjust path if needed
+(load "ol-emacs-slack.el")
+(require 'ol-emacs-slack)
+
+(defun my/org-md-scratchpad ()
+  "Open Org buffer, export to Markdown via Pandoc, clean output, copy to clipboard, and clean up."
+  (interactive)
+  (let* ((buf (generate-new-buffer "*org-md-scratchpad*"))
+         (win (split-window-below)))
+    (select-window win)
+    (switch-to-buffer buf)
+    (org-mode)
+    (insert "#+BEGIN_SRC shell :results verbatim :exports both\n#+END_SRC")
+    (goto-char (point-max))
+    ;; Setup C-c C-c to export + copy
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map org-mode-map)
+      (define-key map (kbd "C-c C-c")
+                  (lambda ()
+                    (interactive)
+                    (let* ((scratchpad-buf (current-buffer))
+                           (tmp-org (make-temp-file "scratchpad" nil ".org"))
+                           (tmp-md (make-temp-file "scratchpad" nil ".md")))
+                      (condition-case err
+                          (progn
+                            ;; Evaluate code blocks
+                            (let ((org-confirm-babel-evaluate nil))
+                              (org-babel-execute-buffer))
+                            ;; Write Org content to temp file
+                            (write-region (point-min) (point-max) tmp-org nil 'quiet)
+                            ;; Run Pandoc with clean formatting options
+                            (call-process "pandoc" nil nil nil
+                                          tmp-org "-f" "org" "-t" "markdown"
+                                          "-o" tmp-md
+                                          "--wrap=none"
+                                          "--markdown-headings=atx")
+                            ;; Read final result and copy
+                            (with-temp-buffer
+                              (insert-file-contents tmp-md)
+                              (kill-new (buffer-string)))
+                            (message "✅ Markdown copied to clipboard.")
+                            ;; Cleanup
+                            (kill-buffer scratchpad-buf)
+                            (when (window-live-p win)
+                              (delete-window win)))
+                        (error (message "❌ Export failed: %s" (error-message-string err)))))))
+      (use-local-map map))))
+
+;; Opens org to markdown scratch pad.
+(map! :leader
+      :desc "Org to markdown scratchpad"
+      "o o" (lambda () (interactive) (my/org-md-scratchpad)))
+
+(setq jiralib-url "https://seastead.atlassian.net")
+(setq jiralib-update-issue-fields-exclude-list '(priority components))
+
+;; Override doom emacs org mode todo states to change WAITING to NEXT.
+(after! org
+  (setq org-todo-keywords
+        '((sequence
+           "TODO(t)"     ; A task that needs doing & is ready to do
+           "PROJ(p)"     ; A project, which usually contains other tasks
+           "STRT(s)"     ; A task that is in progress
+           "NEXT(n)"     ; A task that's on my list of things to do next
+           "WAIT(w)"     ; This task is paused/on hold because I'm waiting for others
+           "INBOX(i)"     ; An unconfirmed and unapproved task or notion
+           "|"
+           "DONE(d)"     ; Task successfully completed
+           "CANCEL(c)")))    ; Task was cancelled, aborted, or is no longer applicable
+
+  (setq org-todo-keyword-faces
+        '(("STRT"   . +org-todo-active)
+          ("NEXT"   . +org-todo-onhold)
+          ("WAIT"   . +org-todo-onhold)
+          ("PROJ"   . +org-todo-project)
+          ("CANCEL" . +org-todo-cancel))))
+
+(setq org-refile-targets
+      '(("work-archive.org" :maxlevel . 4)
+        ("personal-archive.org" :maxlevel . 4)
+        ("~/.org-jira/AUTH-archive.org" :maxlevel . 4)))
+
+;; Set mapping for org todo states mapping back to jira states
+(defcustom org-jira-done-states
+  '("Closed" "Resolved" "Done" "Cancelled")
+  "Jira states that should be considered as DONE for `org-mode'."
+  :group 'org-jira :type '(repeat (string :tag "Jira state name:")))
+
+(defcustom org-jira-jira-status-to-org-keyword-alist
+  '(("To Do" . "TODO")
+    ("In Progress" . "STRT")
+    ("Done" . "DONE"))
+  "Custom alist of jira status stored in car and `org-mode' keyword stored in cdr."
+  :group 'org-jira
+  :type '(alist :key-type string :value-type string))
+
+;; Add mapping in org mode for org-jira-todo-to-jira - this needs to be
+;; accessible from within org-mode generally. All org-jira keybindings are
+;; currently scoped by the library to only work in org-jira mode, which is only
+;; enabled on org-jira.org style files (pulled issues)
+(map! :leader
+;;; <leader> j --- jira
+      (:prefix-map ("j" . "jira")
+       :desc "Get issues" "g" #'org-jira-get-issues))
+
+;; Mapping to allow org-jira-todo-to-jira to work from any org buffer.
+(after! org-jira
+  ;; Available only in org-mode buffers
+  (map! :map org-mode-map
+        :desc "org-jira: TODO to JIRA"
+        "C-c tj" #'org-jira-todo-to-jira))
+
+;; Add logic so that when we call org-jira-todo-to-jira we insert a link to the
+;; org-jira ticket line back onto the original todo item.
+(after! org-jira
+  (defvar my/org-jira--origin-marker nil
+    "Marker pointing to the original Org TODO that spawned the JIRA issue.")
+
+  (defvar my/org-jira--original-heading-text nil
+    "Backup of the original TODO heading and its body.")
+
+  ;; Before advice: store point + full heading text
+  (defun my/org-jira--store-todo-entry ()
+    (setq my/org-jira--origin-marker (point-marker))
+    (let ((start (org-back-to-heading t))
+          (end (save-excursion (org-end-of-subtree t t))))
+      (setq my/org-jira--original-heading-text
+            (buffer-substring-no-properties start end))))
+
+  (defun my/org-jira--restore-todo-with-link ()
+    (let (link-path link-desc ticket-id)
+      ;; Step 1: get JIRA link and ticket ID from ~/.org-jira/AUTH.org
+      (with-current-buffer (find-file-noselect "~/.org-jira/AUTH.org")
+        (goto-char (point-max))
+        (when (re-search-backward "^\\*+ +TODO\\b" nil t)
+          (org-back-to-heading t)
+          (let* ((link (org-store-link nil))
+                 (parsed (org-link-unescape link)))
+            (when (string-match "\\[\\[\\(.*?\\)\\]\\[\\(.*?\\)\\]\\]" parsed)
+              (setq link-path (match-string 1 parsed))
+              (setq link-desc (match-string 2 parsed)))
+            ;; Extract ticket ID from heading text (e.g., AUTH-211)
+            (when (re-search-forward "\\(AUTH-[0-9]+\\)" (org-entry-end-position) t)
+              (setq ticket-id (match-string 1))))))
+
+      ;; Step 2: switch back to original buffer and insert
+      (when (and my/org-jira--origin-marker
+                 (marker-buffer my/org-jira--origin-marker))
+        (let ((origin-buf (marker-buffer my/org-jira--origin-marker)))
+          (when (buffer-live-p origin-buf)
+            (with-current-buffer origin-buf
+              (goto-char my/org-jira--origin-marker)
+              (insert my/org-jira--original-heading-text)
+              ;; Move to heading and insert ticket ID prefix if available
+
+              (save-excursion
+                (org-back-to-heading t)
+                (let* ((components (org-heading-components))
+                       (todo (nth 2 components))
+                       (heading (nth 4 components)))
+                  ;; Only update heading if ticket-id is not already present
+                  (when (and ticket-id
+                             (not (string-prefix-p (concat ticket-id ": ") heading)))
+                    ;; Reconstruct the full headline safely
+                    (org-edit-headline
+                     (format "%s: %s" ticket-id heading)))))
+
+              ;; Move to end of heading and insert backlink
+              (save-excursion
+                (goto-char (org-entry-end-position))
+                (insert "Linked JIRA ticket: ")
+                (when link-path
+                  (org-insert-link nil link-path link-desc))
+                (insert "\n")))
+            (switch-to-buffer origin-buf)
+            (goto-char my/org-jira--origin-marker)
+            (recenter))))))
+
+  ;; Hook into both org-jira commands
+  (dolist (fn '(org-jira-todo-to-jira))
+    (advice-add fn :before #'my/org-jira--store-todo-entry)
+    (advice-add fn :after  #'my/org-jira--restore-todo-with-link)))
+
+;; This is a custom function and hook that does the following:
+;; 1. Intercepts when forge-create-pullreq gets called
+;; 2. Grabs the jira ticket from the current branch
+;; 3. Inserts the tip commit contents in as the PR contents (similar behavior to gitlab)
+;; 4. Injects a "Closes <jira-ticket-id>" line into the PR details
+(with-eval-after-load 'forge
+  (defun my/forge--populate-pr-if-buffer ()
+    "When PR buffer appears, auto-fill with commit body and JIRA ID."
+    (when (string= (buffer-name) "new-pullreq")
+      (remove-hook 'post-command-hook #'my/forge--populate-pr-if-buffer)
+      (let* ((commit-msg (string-trim-right
+                          (magit-git-output "log" "-1" "--pretty=%B")))
+             (branch-name (magit-get-current-branch))
+             (jira-id (when (string-match "\\bAUTH-[0-9]+\\b" branch-name)
+                        (match-string 0 branch-name)))
+             (closes-line (when jira-id (concat "\n\nCloses " jira-id)))
+             (full-msg (concat commit-msg closes-line)))
+        (goto-char (point-min))
+        (when (looking-at "^#\\s-*")
+          (replace-match (concat "# " full-msg))))))
+
+  (defun my/forge--setup-auto-pr-body ()
+    "Temporarily watch for the PR buffer to appear."
+    (add-hook 'post-command-hook #'my/forge--populate-pr-if-buffer))
+
+  ;; Use a safe advice wrapper that ignores arguments
+  (advice-add 'forge-create-pullreq :after
+              (lambda (&rest _) (my/forge--setup-auto-pr-body))))
+
+(use-package! org-gtd
+  :after org
+  :config
+  (setq org-edna-use-inheritance t)
+  (setq org-gtd-directory "~/org/gtd")
+  (org-edna-mode)
+  (map! :leader
+        (:prefix ("l" . "org-gtd")
+         :desc "Capture"           "c"  #'org-gtd-capture
+         :desc "Engage"            "e"  #'my/org-gtd-engage
+         :desc "Process inbox"     "p"  #'org-gtd-process-inbox
+         :desc "Show all next"     "n"  #'org-gtd-show-all-next
+         :desc "Set area of focus" "a"  #'org-gtd-area-of-focus-set-on-item-at-point
+         :desc "Stuck projects"    "s"  #'org-gtd-review-stuck-projects))
+
+  (map! :desc "Capture gtd item" "C-c c" #'org-gtd-capture)
+
+  (map! :desc "Area of focus gtd item" "C-c a" #'org-gtd-area-of-focus-set-on-item-at-point)
+
+  (map! :map org-gtd-clarify-map
+        :desc "Organize this item" "C-c c" #'org-gtd-organize))
+
+(after! org-gtd
+  (setq org-gtd-capture-templates
+        '(("i" "Inbox"
+           entry  (file "~/org/gtd/inbox.org")
+           "* %?\n%U\n\n  %i"
+           :kill-buffer t)
+          ("l" "Inbox with link"
+           entry (file "~/org/gtd/inbox.org")
+           "* %?\n%U\n\n  %i\n  %a"
+           :kill-buffer t)
+          ("s" "Slack"
+           entry (file "~/org/gtd/inbox.org")
+           "* [Slack thread w/ %^{Author}]: %?\n%U\n\n  %i\n  %a"
+           :kill-buffer t)
+          ("e" "Email"
+           entry (file "~/org/gtd/inbox.org")
+           "* Respond to %:fromname: %:subject\n%U\n\n  %i\n  %a"
+           :immediate-finish t
+           :kill-buffer t)))
+
+  (setq org-gtd-areas-of-focus '("work" "coding" "music" "adventure" "family" "health" "home"))
+
+  (setq org-gtd-organize-hooks '(org-set-tags-command org-gtd-set-area-of-focus))
+
+  (defun my/save-buffers-after-processing-inbox (&rest _)
+    "Save all buffers after processing inbox."
+    (save-some-buffers t))
+
+  (advice-add 'org-gtd-process--stop :after #'my/save-buffers-after-processing-inbox)
+
+  ;; Prompt for today's daily focus if not stored yet, otherwise get from file.
+  (defun my/org-gtd-get-daily-focus ()
+    "Get or prompt for today's focus, stored in ~/org/gtd/focus.org."
+    (let* ((today (format-time-string "%Y-%m-%d"))
+           (focus-file (expand-file-name "focus.org" org-gtd-directory))
+           (focus-text nil))
+      ;; Try to read the focus from the file if it exists
+      (when (file-exists-p focus-file)
+        (with-temp-buffer
+          (insert-file-contents focus-file)
+          (goto-char (point-min))
+          (when (re-search-forward (format "^\\* %s \\(.*\\)" (regexp-quote today)) nil t)
+            (setq focus-text (match-string 1)))))
+      ;; If not found, prompt user and append to the file
+      (unless focus-text
+        (setq focus-text (read-string "Set today's focus: "))
+        (with-temp-buffer
+          (when (file-exists-p focus-file)
+            (insert-file-contents focus-file))
+          (goto-char (point-max))
+          (unless (bolp) (insert "\n"))
+          (insert (format "* %s %s\n" today focus-text))
+          (write-region (point-min) (point-max) focus-file)))
+      focus-text))
+
+  (defun my/org-gtd-engage ()
+    "Show custom GTD agenda view grouped by area of focus."
+    (interactive)
+    (with-org-gtd-context
+        ;; Step 1: get today's focus
+        (let* ((daily-focus (my/org-gtd-get-daily-focus))
+
+               ;; Step 2: create header block to display focus
+               (focus-block
+                `(tags "+FOCUS"
+                  ((org-agenda-overriding-header ,(format "Today's Focus 🎯: %s" daily-focus))
+                   (org-agenda-ignore-drawer-properties t)
+                   (org-agenda-skip-function (lambda () t)))))  ;; dummy block just to display header
+
+               ;; Step 3: build remaining blocks
+               (next-action-blocks
+                (cl-loop for area in org-gtd-areas-of-focus
+                         for matcher = (format "TODO=\"NEXT\"+CATEGORY=\"%s\"" area)
+                         for entries = (org-map-entries (lambda () t) matcher 'agenda)
+                         unless (null entries)
+                         collect `(todo ,org-gtd-next
+                                   ((org-agenda-overriding-header ,(format "%s Next Actions" (capitalize area)))
+                                    (org-agenda-skip-function
+                                     (lambda () (org-gtd-skip-unless-area-of-focus ,area)))))))
+
+               (agenda-block
+                `(agenda ""
+                  ((org-agenda-span 1)
+                   (org-agenda-start-day nil)
+                   (org-agenda-skip-additional-timestamps-same-entry t))))
+
+               (project-block
+                `(tags ,org-gtd-project-headings
+                  ((org-agenda-overriding-header "Active Projects")
+                   (org-agenda-sorting-strategy '(category-down)))))
+
+               (all-blocks (append (list agenda-block focus-block project-block) next-action-blocks))
+
+               (org-agenda-custom-commands
+                `(("x" "GTD Engage View"
+                   ,all-blocks
+                   ((org-agenda-buffer-name "*Org GTD Engage*"))))))
+          (org-agenda nil "x")
+          (goto-char (point-min))))))
+
+(map! :leader
+      :desc "Toggle todo.org"
+      "o g" (lambda () (interactive) (my/toggle-file-split "~/org/gtd/org-gtd-tasks.org"))
+      :desc "Toggle jira issues"
+      "o j" (lambda () (interactive) (my/toggle-file-split "~/.org-jira/AUTH.org")))
+
+
+(after! evil
+  (defun rune/evil-hook ()
+    (dolist (mode '(custom-mode
+                    eshell-mode
+                    vterm-mode
+                    term-mode
+
+                    ))
+      (add-to-list 'evil-emacs-state-modes mode)))
+  (add-hook 'evil-mode-hook #'rune/evil-hook))
