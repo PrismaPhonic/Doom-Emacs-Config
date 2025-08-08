@@ -1,6 +1,5 @@
 #+title: Doom Emacs Configuration
 #+AUTHOR: Peter Farr
-#+PROPERTY: header-args:emacs-lisp :tangle config.el :mkdirp yes
 
 * Startup Performance
 
@@ -491,19 +490,9 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 ** Auto-tangle Configuration Files
 
-This snippet adds a hook to =org-mode= buffers so that =pmf/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
+If you add the =tangle= flag to doom's =init.el= then you get auto tangling of this file. This helper however, will help to auto indent the tangled =config.el= file
 
 #+begin_src emacs-lisp
-
-;; Automatically tangle our config.org config file when we save it
-(defun pmf/org-babel-tangle-config ()
-  (when (string-equal (file-name-directory (buffer-file-name))
-                      (expand-file-name doom-user-dir))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'pmf/org-babel-tangle-config)))
 
 ;; Auto indent the generated config.el file for a clean look.
 (defun pmf/src-cleanup ()

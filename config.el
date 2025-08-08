@@ -321,16 +321,6 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("ru" . "src rust")))
 
-;; Automatically tangle our config.org config file when we save it
-(defun pmf/org-babel-tangle-config ()
-  (when (string-equal (file-name-directory (buffer-file-name))
-                      (expand-file-name doom-user-dir))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'pmf/org-babel-tangle-config)))
-
 ;; Auto indent the generated config.el file for a clean look.
 (defun pmf/src-cleanup ()
   (indent-region (point-min) (point-max))
