@@ -349,6 +349,25 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 
 (add-hook 'rust-mode-hook #'my/rust-enable-format-on-save)
 
+;; Custom function to run evxcr for rust repl functionality
+(defun pmf/rust-evcxr-repl ()
+  "Start or switch to an evcxr REPL."
+  (interactive)
+  (unless (executable-find "evcxr")
+    (user-error "evcxr not found on PATH. `cargo install evcxr_repl` then `doom env`"))
+  (let* ((buf-name "*evcxr*")
+         (buf (get-buffer buf-name)))
+    (if (and buf (comint-check-proc buf))
+        (pop-to-buffer buf)
+      (let ((default-directory (or (and (fboundp 'projectile-project-root)
+                                        (projectile-project-root))
+                                   default-directory)))
+        (pop-to-buffer (make-comint-in-buffer "evcxr" buf-name "evcxr" nil))))))
+
+(after! rustic
+  ;; Tell Doom's +eval to use rustic's REPL in rustic-mode
+  (set-repl-handler! 'rust-mode #'pmf/rust-evcxr-repl))
+
 ;; Setup for magit forge with rumble gitlab instance
 (setq auth-sources '("~/.authinfo.gpg"))
 (after! forge
