@@ -133,6 +133,10 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   ;; Add a nice drop down carrot instead of the standard [..] when collapsed
   (setq org-ellipsis " ▾")
 
+  ;; When we are done with a todo, log the time it completed
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
 
   ;; Override doom emacs org mode todo states to change WAITING to NEXT.
   ;; This might get removed as we use org-gtd entirely now.
