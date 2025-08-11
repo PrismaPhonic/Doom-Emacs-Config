@@ -332,6 +332,10 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 
 (add-hook 'org-babel-post-tangle-hook 'pmf/src-cleanup)
 
+(after! lsp-ui
+  (setq lsp-ui-sideline-enable nil)
+  (setq lsp-ui-sideline-show-hover nil))
+
 (setq +tree-sitter-hl-enabled-modes '(rust-mode))
 (add-hook 'rust-mode-hook #'tree-sitter-mode)
 (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)

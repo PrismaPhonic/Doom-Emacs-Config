@@ -511,6 +511,19 @@ If you add the =tangle= flag to doom's =init.el= then you get auto tangling of t
 | pmf/src-cleanup |
 
 * Development
+** Lsp mode
+
+*** lsp-ui
+
+Turn off sideline entirely. I find it distracting.
+
+#+begin_src emacs-lisp
+
+(after! lsp-ui
+  (setq lsp-ui-sideline-enable nil)
+  (setq lsp-ui-sideline-show-hover nil))
+
+#+end_src
 
 ** Rust Development Setup
 
