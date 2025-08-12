@@ -336,18 +336,22 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (setq lsp-ui-sideline-enable nil)
   (setq lsp-ui-sideline-show-hover nil))
 
-(setq +tree-sitter-hl-enabled-modes '(rust-mode))
-(add-hook 'rust-mode-hook #'tree-sitter-mode)
-(add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+(after! rustic
+  (setq +tree-sitter-hl-enabled-modes '(rust-mode))
+  (add-hook 'rust-mode-hook #'tree-sitter-mode)
+  (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
 
-(setq lsp-enable-semantic-highlighting t)
-(add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-(add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
+  (setq lsp-enable-semantic-highlighting t)
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
 
-(defun my/rust-enable-format-on-save ()
-  (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (setq lsp-rust-clippy-preference "on")
 
-(add-hook 'rust-mode-hook #'my/rust-enable-format-on-save)
+  (defun my/rust-enable-format-on-save ()
+    (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+
+  (add-hook 'rust-mode-hook #'my/rust-enable-format-on-save))
 
 ;; Custom function to run evxcr for rust repl functionality
 (defun pmf/rust-evcxr-repl ()

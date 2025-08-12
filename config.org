@@ -531,19 +531,22 @@ This adds configuration for rust development setup, including auto formatting al
 
 #+BEGIN_SRC emacs-lisp
 
-(setq +tree-sitter-hl-enabled-modes '(rust-mode))
-(add-hook 'rust-mode-hook #'tree-sitter-mode)
-(add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+(after! rustic
+  (setq +tree-sitter-hl-enabled-modes '(rust-mode))
+  (add-hook 'rust-mode-hook #'tree-sitter-mode)
+  (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
 
-(setq lsp-enable-semantic-highlighting t)
-(add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-(add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
+  (setq lsp-enable-semantic-highlighting t)
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
 
-(defun my/rust-enable-format-on-save ()
-  (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+  (setq lsp-rust-clippy-preference "on")
 
-(add-hook 'rust-mode-hook #'my/rust-enable-format-on-save)
+  (defun my/rust-enable-format-on-save ()
+    (add-hook 'before-save-hook #'lsp-format-buffer nil t))
 
+  (add-hook 'rust-mode-hook #'my/rust-enable-format-on-save))
 #+END_SRC
 
 *** REPL
