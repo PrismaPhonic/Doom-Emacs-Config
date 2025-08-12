@@ -188,19 +188,19 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (setq org-gtd-capture-templates
         '(("i" "Inbox"
            entry  (file "~/org/gtd/inbox.org")
-           "* %?\n%U\n\n  %i"
+           "* %?\n%U\n\n"
            :kill-buffer t)
           ("l" "Inbox with link"
            entry (file "~/org/gtd/inbox.org")
-           "* %?\n%U\n\n  %i\n  %a"
+           "* %?\n%U\n\n  %a"
            :kill-buffer t)
           ("s" "Slack"
            entry (file "~/org/gtd/inbox.org")
-           "* [Slack thread w/ %^{Author}]: %?\n%U\n\n  %i\n  %a"
+           "* [Slack thread w/ %^{Author}]: %?\n%U\n\n  %a"
            :kill-buffer t)
           ("e" "Email"
            entry (file "~/org/gtd/inbox.org")
-           "* Respond to %:fromname: %:subject\n%U\n\n  %i\n  %a"
+           "* Respond to %:fromname: %:subject\n%U\n\n  %a"
            :immediate-finish t
            :kill-buffer t)))
 
