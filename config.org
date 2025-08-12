@@ -527,7 +527,7 @@ Turn off sideline entirely. I find it distracting.
 
 ** Rust Development Setup
 
-This adds configuration for rust development setup, including auto formatting all buffers on save.
+This adds configuration for rust development setup, including auto formatting all buffers on save. It also turns on clippy as our linter, which is somewhat aggressive, but I find useful for helping to improve our code quality.
 
 #+BEGIN_SRC emacs-lisp
 
