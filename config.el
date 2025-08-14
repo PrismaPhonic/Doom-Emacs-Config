@@ -308,13 +308,18 @@ If it's visible, close it. Otherwise, open in a horizontal split."
         '((t . "▸")
           (nil . "▾"))))
 
-;; Configure column width to 100
 (use-package! olivetti
+  :after org
   :config
-  (setq olivetti-body-width 100))
+  ;; Configure column width to 100
+  (setq olivetti-body-width 100)
+  (setq olivetti-style t)
 
-;; Turn on olivetti mode which centers the content among other things
-(add-hook 'org-mode-hook 'olivetti-mode)
+  ;; Turn on olivetti mode which centers the content among other things
+  :hook (org-mode . olivetti-mode))
+
+(after! diff-hl
+  (setq diff-hl-global-modes '(not image-mode pdf-view-mode org-mode)))
 
 ;; Enable org-habit to show up in agenda view
 (use-package! org-habit

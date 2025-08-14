@@ -459,15 +459,30 @@ I use [[https://github.com/rnkn/olivetti][olivetti]] to center =org-mode= buffer
 
 #+begin_src emacs-lisp
 
-;; Configure column width to 100
 (use-package! olivetti
+  :after org
   :config
-  (setq olivetti-body-width 100))
+  ;; Configure column width to 100
+  (setq olivetti-body-width 100)
+  (setq olivetti-style t)
 
-;; Turn on olivetti mode which centers the content among other things
-(add-hook 'org-mode-hook 'olivetti-mode)
+  ;; Turn on olivetti mode which centers the content among other things
+  :hook (org-mode . olivetti-mode))
 
 #+end_src
+
+
+** Git gutters in org mode
+
+This removes git gutters in org mode, as they distract from the experience of org mode document writing. Doom emacs already adds image-mode and pdf-view-mode to the not list, so we just expand it to include org-mode. Feel free to add any extra modes you would like ignored here.
+
+#+begin_src emacs-lisp
+
+(after! diff-hl
+  (setq diff-hl-global-modes '(not image-mode pdf-view-mode org-mode)))
+
+#+end_src
+
 ** Org habit
 This turns on and configures org habit to work
 
