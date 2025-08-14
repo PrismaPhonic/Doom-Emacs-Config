@@ -253,6 +253,28 @@ This section contains the basic configuration for =org-mode= plus the configurat
           ("CANCEL" . +org-todo-cancel))))
 #+end_src
 
+** Org clock settings
+
+These are settings to ensure that if you clock in on a task, that the running clock persists across all buffers, even if they are non org buffers, and persists across restarts (in case emacs crashes). This is useful for helping to stay focused on a particular task until you've seen it thorugh completion.
+
+#+begin_src emacs-lisp
+
+(after! org
+  ;; Persist clocks across restarts (optional but handy)
+  (setq org-clock-persist 'history
+        org-clock-in-resume t
+        org-clock-out-remove-zero-time-clocks t
+        org-clock-mode-line-total 'current) ; or 'today / 'auto
+
+  (org-clock-persistence-insinuate)
+
+  ;; Keep the modeline in sync when clock changes
+  (add-hook 'org-clock-in-hook    #'org-clock-update-mode-line)
+  (add-hook 'org-clock-out-hook   #'org-clock-update-mode-line)
+  (add-hook 'org-clock-cancel-hook #'org-clock-update-mode-line))
+
+#+end_src
+
 ** Org-gtd
 
 Setup for using [[https://github.com/Trevoke/org-gtd.el][org-gtd]] which provides tooling to use the GTD (Getting Things Done) method inside of org mode.

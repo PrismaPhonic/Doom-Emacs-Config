@@ -159,6 +159,20 @@ If it's visible, close it. Otherwise, open in a horizontal split."
           ("PROJ"   . +org-todo-project)
           ("CANCEL" . +org-todo-cancel))))
 
+(after! org
+  ;; Persist clocks across restarts (optional but handy)
+  (setq org-clock-persist 'history
+        org-clock-in-resume t
+        org-clock-out-remove-zero-time-clocks t
+        org-clock-mode-line-total 'current) ; or 'today / 'auto
+
+  (org-clock-persistence-insinuate)
+
+  ;; Keep the modeline in sync when clock changes
+  (add-hook 'org-clock-in-hook    #'org-clock-update-mode-line)
+  (add-hook 'org-clock-out-hook   #'org-clock-update-mode-line)
+  (add-hook 'org-clock-cancel-hook #'org-clock-update-mode-line))
+
 (setq org-gtd-update-ack "3.0.0")
 
 (use-package! org-gtd
