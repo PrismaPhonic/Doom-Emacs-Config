@@ -344,13 +344,6 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("ru" . "src rust")))
 
-;; Auto indent the generated config.el file for a clean look.
-(defun pmf/src-cleanup ()
-  (indent-region (point-min) (point-max))
-  (save-buffer))
-
-(add-hook 'org-babel-post-tangle-hook 'pmf/src-cleanup)
-
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil)
   (setq lsp-ui-sideline-show-hover nil))

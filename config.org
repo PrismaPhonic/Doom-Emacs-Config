@@ -531,21 +531,7 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 ** Auto-tangle Configuration Files
 
-If you add the =tangle= flag to doom's =init.el= then you get auto tangling of this file. This helper however, will help to auto indent the tangled =config.el= file
-
-#+begin_src emacs-lisp
-
-;; Auto indent the generated config.el file for a clean look.
-(defun pmf/src-cleanup ()
-  (indent-region (point-min) (point-max))
-  (save-buffer))
-
-(add-hook 'org-babel-post-tangle-hook 'pmf/src-cleanup)
-
-#+end_src
-
-#+RESULTS:
-| pmf/src-cleanup |
+I used to have a helper here for auto formatting the tangled file, but I have since added this as a feature to doom emacs. If you would like to turn on auto formatting of the tangled output file, simply add the =+pretty= flag to the =literate= module in your =init.el= file. Note - this is not yet merged in. I will update this section when it is.
 
 * Development
 ** Lsp mode
