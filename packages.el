@@ -72,3 +72,5 @@
 (package! olivetti)
 
 (package! rainbow-delimiters)
+
+(package! eshell-git-prompt)
