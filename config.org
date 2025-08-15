@@ -28,6 +28,13 @@ Set my name and email for use by emacs where applicable. Some configuration use 
       user-mail-address "farr.peterm@gmail.com")
 #+END_SRC
 
+* Authinfo
+
+In emacs there's a standard by which you can store confidential information in a gpg encrypted file. You can read about how to set it up [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Authentication.html][here]].
+
+Throughout this configuration I'll provide specifics for various packages that require confidential information, and how they expect it to be setup in your authinfo file.
+
+Note that if you encrypt it with gpg, you should be able to edit it as if it were a normal file in emacs, and emacs will automatically handle decryption on read and encryption on write for you.
 * Utilities
 
 These go early in flow in case they get called later on
@@ -611,6 +618,10 @@ This section adds functionality to open a rust repl using doom emacs
 
 [[https://magit.vc/][Magit]] setup along with forge for my work Gitlab instance
 
+You'll need to create a personal access token in Gitlab, and then provide it in your =.authinfo.gpg= file in the following format:
+
+=machine gitlab.work-address.com login username^forge password <token here>=
+
 #+begin_src emacs-lisp
 
 ;; Setup for magit forge with rumble gitlab instance
@@ -649,6 +660,10 @@ This fixes an issue I was having with getting emacs to find my gpg agent
 ** Org-Jira Configuration
 
 This configures [[https://github.com/ahungry/org-jira][org-jira]] to point at my work jira, and excludes fields that would otherwise break issue creation and updating for my works particular jira board among other things
+
+You'll also need to generate an access token in jira, and add it to your encrypted =.authinfo.gpg= file in the following format:
+
+=machine seastead.atlassian.net login <work email> password <access-token> port 443=
 
 #+BEGIN_SRC emacs-lisp
 (use-package! org-jira
@@ -791,6 +806,14 @@ This adds a hook that automatically injects the tip commit contents into the PR 
 
 This sets up integration with the [[https://github.com/emacs-slack/emacs-slack][slack plugin]], for use with my internal company, pulling cookie and token from an encrypted =auth-sources= file. It also enables alerting from the slack plugin
 
+To avoid putting your token and cookie into your config, you can load them into your encrypted =.authinfo.gpg= file, in the following formats.
+
+For token: =machine rumbleinc.slack.com login peter.farr@rumble.com password <token here>=
+
+For cookie: =machine rumbleinc.slack.com login peter.farr@rumble.com^cookie password <token here>=
+
+Then differentiate between the two accordingly, as seen in the below config.
+
 #+begin_src emacs-lisp
 
 (use-package slack
@@ -848,6 +871,10 @@ This sets up integration with the [[https://github.com/emacs-slack/emacs-slack][
 * Email
 
 This sets up email using mu4e. Mu needs to be setup in advance. Please follow the [[https://docs.doomemacs.org/v21.12/modules/email/mu4e/][doom documentation on setting up email]] first.
+
+For gmail, you'll need to setup an "app password" in your gmail settings, and use that as your password in your =.authinfo.gpg= file in a line that looks like this.
+
+=machine smtp.gmail.com login farr.peterm@gmail.com password <app pass here>=
 
 #+begin_src emacs-lisp
 
