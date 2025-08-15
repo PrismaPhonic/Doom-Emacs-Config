@@ -76,3 +76,5 @@
 (package! eshell-git-prompt)
 
 (package! rust-playground)
+
+(package! language-detection)

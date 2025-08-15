@@ -806,6 +806,8 @@ This adds a hook that automatically injects the tip commit contents into the PR 
 
 This sets up integration with the [[https://github.com/emacs-slack/emacs-slack][slack plugin]], for use with my internal company, pulling cookie and token from an encrypted =auth-sources= file. It also enables alerting from the slack plugin
 
+Note that this also enables automatic syntax highlighting of code blocks in Slack, leveraging the =language-detection= package by setting the =slack-block-highlight-source= variable to =t=.
+
 To avoid putting your token and cookie into your config, you can load them into your encrypted =.authinfo.gpg= file, in the following formats.
 
 For token: =machine rumbleinc.slack.com login peter.farr@rumble.com password <token here>=
@@ -816,7 +818,7 @@ Then differentiate between the two accordingly, as seen in the below config.
 
 #+begin_src emacs-lisp
 
-(use-package slack
+(use-package! slack
   :commands (slack-start)
   :bind (("C-c S K" . slack-stop)
          ("C-c S c" . slack-select-rooms)
@@ -859,7 +861,8 @@ Then differentiate between the two accordingly, as seen in the below config.
    :full-and-display-names t
    :default t
    :subscribed-channels '(rumble-sso-auth))
-  (message "[slack] team registered ✅"))
+
+  (setq slack-block-highlight-source t))
 
 (use-package alert
   :commands (alert)

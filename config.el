@@ -520,7 +520,7 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (advice-add 'forge-create-pullreq :after
               (lambda (&rest _) (my/forge--setup-auto-pr-body))))
 
-(use-package slack
+(use-package! slack
   :commands (slack-start)
   :bind (("C-c S K" . slack-stop)
          ("C-c S c" . slack-select-rooms)
@@ -563,7 +563,8 @@ If it's visible, close it. Otherwise, open in a horizontal split."
    :full-and-display-names t
    :default t
    :subscribed-channels '(rumble-sso-auth))
-  (message "[slack] team registered ✅"))
+
+  (setq slack-block-highlight-source t))
 
 (use-package alert
   :commands (alert)
