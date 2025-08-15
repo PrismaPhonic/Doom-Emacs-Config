@@ -74,3 +74,5 @@
 (package! rainbow-delimiters)
 
 (package! eshell-git-prompt)
+
+(package! rust-playground)
