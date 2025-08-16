@@ -540,6 +540,24 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 I used to have a helper here for auto formatting the tangled file, but I have since added this as a feature to doom emacs. If you would like to turn on auto formatting of the tangled output file, simply add the =+pretty= flag to the =literate= module in your =init.el= file. Note - this is not yet merged in. I will update this section when it is.
 
+Separately, if you would like a helper function that can auto tangle all emacs-lisp blocks in an org file (like the one you are reading), you can use this helper function.
+
+#+begin_src emacs-lisp
+
+(defun pmf/org-indent-elisp-src-blocks ()
+  "Indent all Emacs Lisp src blocks in the current Org buffer, then save."
+  (interactive)
+  (require 'ob) ;; ensure org-babel macros are loaded
+  (save-excursion
+    (org-babel-map-src-blocks nil ;; iterate over all babel blocks in current buffer
+      (when (string= lang "emacs-lisp")
+        (org-babel-do-in-edit-buffer
+         (emacs-lisp-mode)
+         (indent-region (point-min) (point-max)))))
+    (save-buffer)))
+
+#+end_src
+
 * Development
 ** Lsp mode
 

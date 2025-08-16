@@ -344,6 +344,18 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("ru" . "src rust")))
 
+(defun pmf/org-indent-elisp-src-blocks ()
+  "Indent all Emacs Lisp src blocks in the current Org buffer, then save."
+  (interactive)
+  (require 'ob) ;; ensure org-babel macros are loaded
+  (save-excursion
+    (org-babel-map-src-blocks nil ;; iterate over all babel blocks in current buffer
+      (when (string= lang "emacs-lisp")
+        (org-babel-do-in-edit-buffer
+         (emacs-lisp-mode)
+         (indent-region (point-min) (point-max)))))
+    (save-buffer)))
+
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil)
   (setq lsp-ui-sideline-show-hover nil))
