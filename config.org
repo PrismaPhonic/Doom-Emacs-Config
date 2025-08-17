@@ -639,6 +639,11 @@ This section adds functionality to open a rust repl using doom emacs
   (set-repl-handler! 'rust-mode #'pmf/rust-evcxr-repl))
 
 #+end_src
+*** Rust Playground
+
+We can use the [[https://github.com/grafov/rust-playground][rust-playground]] package to get an impromptu local rust playground scratch pad which can be very useful.
+
+Use =rust-playground= to spin up a new playground buffer. Once there you can type =C-c b= to flip back and forth between =main.rs= and =Cargo.toml= for adding packages as needed. Type =C-c C-c= to execute the playground and use the =rust-playground-upload= command to upload the buffer to rust playground website for sharing around!
 
 ** Magit and Forge
 
