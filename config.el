@@ -362,6 +362,37 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (setq lsp-ui-sideline-enable nil)
   (setq lsp-ui-sideline-show-hover nil))
 
+(use-package! flycheck-posframe
+  :after flycheck
+  :hook (flycheck-mode . flycheck-posframe-mode)
+  :config
+  ;; thin white outline
+  (setq flycheck-posframe-border-width 1
+        flycheck-posframe-position 'point)
+  (set-face-attribute 'flycheck-posframe-border-face nil :foreground "white")
+
+  (defun pmf/flycheck-posframe-simple-padding ()
+    (let* ((bg  (or (face-background 'flycheck-posframe-face nil t)
+                    (face-background 'tooltip nil t)
+                    (face-background 'default nil t)))
+           (pad 10)) ;; padding thickness
+      ;; padding: draw a box in the same color as the background
+      (set-face-attribute 'flycheck-posframe-face nil
+                          :box `(:line-width ,pad :color ,bg))
+      ;; severity faces: inherit colors from error/warning/etc,
+      ;; and the box from the base face (no color overrides)
+      (dolist (pair '((flycheck-posframe-error-face   . error)
+                      (flycheck-posframe-warning-face . warning)
+                      (flycheck-posframe-info-face    . shadow)))
+        (set-face-attribute (car pair) nil
+                            :inherit (list (cdr pair) 'flycheck-posframe-face)
+                            :foreground 'unspecified
+                            :background 'unspecified
+                            :box 'unspecified))))
+
+  (add-hook 'doom-load-theme-hook #'pmf/flycheck-posframe-simple-padding)
+  (pmf/flycheck-posframe-simple-padding))
+
 (after! rustic
   (setq +tree-sitter-hl-enabled-modes '(rust-mode))
   (add-hook 'rust-mode-hook #'tree-sitter-mode)

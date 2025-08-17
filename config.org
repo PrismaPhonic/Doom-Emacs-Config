@@ -581,6 +581,45 @@ Turn off sideline entirely. I find it distracting.
 
 #+end_src
 
+*** Flycheck popup
+
+This customizes the flycheck popup tooltip (for lsp diagnostics) to be better stylized by using flycheck-posframe. It fakes margins by drawing boxes underneath in the same color as the expected background colors, while maintaining severity colors for error/warn/info, and adds a small white border so the box pops a bit better as well
+
+#+begin_src emacs-lisp
+
+(use-package! flycheck-posframe
+  :after flycheck
+  :hook (flycheck-mode . flycheck-posframe-mode)
+  :config
+  ;; thin white outline
+  (setq flycheck-posframe-border-width 1
+        flycheck-posframe-position 'point)
+  (set-face-attribute 'flycheck-posframe-border-face nil :foreground "white")
+
+  (defun pmf/flycheck-posframe-simple-padding ()
+    (let* ((bg  (or (face-background 'flycheck-posframe-face nil t)
+                    (face-background 'tooltip nil t)
+                    (face-background 'default nil t)))
+           (pad 10)) ;; padding thickness
+      ;; padding: draw a box in the same color as the background
+      (set-face-attribute 'flycheck-posframe-face nil
+                          :box `(:line-width ,pad :color ,bg))
+      ;; severity faces: inherit colors from error/warning/etc,
+      ;; and the box from the base face (no color overrides)
+      (dolist (pair '((flycheck-posframe-error-face   . error)
+                      (flycheck-posframe-warning-face . warning)
+                      (flycheck-posframe-info-face    . shadow)))
+        (set-face-attribute (car pair) nil
+                            :inherit (list (cdr pair) 'flycheck-posframe-face)
+                            :foreground 'unspecified
+                            :background 'unspecified
+                            :box 'unspecified))))
+
+  (add-hook 'doom-load-theme-hook #'pmf/flycheck-posframe-simple-padding)
+  (pmf/flycheck-posframe-simple-padding))
+
+#+end_src
+
 ** Rust Development Setup
 
 This adds configuration for rust development setup, including auto formatting all buffers on save. It also turns on clippy as our linter, which is somewhat aggressive, but I find useful for helping to improve our code quality.

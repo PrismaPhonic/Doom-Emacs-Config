@@ -77,3 +77,5 @@
 (package! language-detection)
 
 (package! ob-restclient :pin "94dd9cd98ff50717135ed5089afb378616faf11a")
+
+(package! flycheck-posframe)
