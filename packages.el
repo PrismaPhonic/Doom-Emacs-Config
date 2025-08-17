@@ -62,9 +62,6 @@
 (package! mpv
   :recipe (:host github :repo "kljohann/mpv.el"))
 
-(package! org-jira
-  :recipe (:host github :repo "PrismaPhonic/org-jira"))
-
 (package! org-gtd
   :recipe (:host github :repo "Trevoke/org-gtd.el"
            :files (:defaults "*.org")))
