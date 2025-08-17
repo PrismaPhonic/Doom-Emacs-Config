@@ -356,6 +356,8 @@ If it's visible, close it. Otherwise, open in a horizontal split."
          (indent-region (point-min) (point-max)))))
     (save-buffer)))
 
+(advice-add 'org-refile :after #'(lambda (&rest _) (org-save-all-org-buffers)))
+
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil)
   (setq lsp-ui-sideline-show-hover nil))

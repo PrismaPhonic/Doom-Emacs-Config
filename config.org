@@ -347,7 +347,6 @@ This is a fix for a weird bug with org-gtd where it prompts us about upgrading, 
 
 #+end_src
 
-
 *** Auto-Save GTD Buffers after Processing
 
 This is a bit of a hack to ensure that all buffers are saved after we finish processing the inbox. I noticed without this that sometimes our inbox and tasks files were not properly saved and I lost data
@@ -361,6 +360,7 @@ This is a bit of a hack to ensure that all buffers are saved after we finish pro
 (advice-add 'org-gtd-process--stop :after #'my/save-buffers-after-processing-inbox)
 
 #+end_src
+
 *** Custom Engage View
 This creates functionality for setting a focus for the day. When launching our custom engage view, you will be prompted to enter a focus for the day if you have not already, which will be displayed visually after the calendar view in our custom engage view
 
@@ -478,7 +478,6 @@ I use [[https://github.com/rnkn/olivetti][olivetti]] to center =org-mode= buffer
 
 #+end_src
 
-
 ** Git gutters in org mode
 
 This removes git gutters in org mode, as they distract from the experience of org mode document writing. Doom emacs already adds image-mode and pdf-view-mode to the not list, so we just expand it to include org-mode. Feel free to add any extra modes you would like ignored here.
@@ -555,6 +554,15 @@ Separately, if you would like a helper function that can auto tangle all emacs-l
          (emacs-lisp-mode)
          (indent-region (point-min) (point-max)))))
     (save-buffer)))
+
+#+end_src
+** Auto save buffers after tangling
+
+This was provided to me by the org-gtd guy - maybe get rid of my function above that hooks into org-gtd specifically and use this one instead.
+
+#+begin_src emacs-lisp
+
+(advice-add 'org-refile :after #'(lambda (&rest _) (org-save-all-org-buffers)))
 
 #+end_src
 
