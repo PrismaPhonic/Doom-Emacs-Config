@@ -683,6 +683,17 @@ This fixes an issue I was having with getting emacs to find my gpg agent
 
 #+end_src
 
+** Eshell
+
+Eshell seems far more limited than vterm, but might be useful as a scheme repl, and is supposedly highly customizable. This is a small nicities update for eshell. In =packages.el= I'm using =eshell-git-prompt=. This sets the theme to use powerline
+
+#+begin_src emacs-lisp
+
+(eshell-git-prompt-use-theme 'powerline)
+
+#+end_src
+
+
 ** Org-Jira Configuration
 
 This configures [[https://github.com/ahungry/org-jira][org-jira]] to point at my work jira, and excludes fields that would otherwise break issue creation and updating for my works particular jira board among other things

@@ -413,6 +413,8 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 
 (add-hook 'prog-mode 'rainbow-delimiters-mode)
 
+(eshell-git-prompt-use-theme 'powerline)
+
 (use-package! org-jira
   :after org
   :config
