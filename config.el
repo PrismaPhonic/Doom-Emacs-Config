@@ -258,6 +258,7 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 (defun my/org-gtd-engage ()
   "Show custom GTD agenda view grouped by area of focus."
   (interactive)
+  (org-gtd-core-prepare-agenda-buffers)
   (with-org-gtd-context
       ;; Step 1: get today's focus
       (let* ((daily-focus (my/org-gtd-get-daily-focus))
