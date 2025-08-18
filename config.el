@@ -219,7 +219,7 @@ If it's visible, close it. Otherwise, open in a horizontal split."
            :kill-buffer t)))
 
   ;; Override the areas of focus with our own
-  (setq org-gtd-areas-of-focus '("work" "coding" "music" "adventure" "family" "health" "home"))
+  (setq org-gtd-areas-of-focus '("work" "coding" "music" "adventure" "family" "health" "home" "life"))
 
   ;; Add asking for area of focus when processing inbox
   (setq org-gtd-organize-hooks '(org-set-tags-command org-gtd-set-area-of-focus)))
