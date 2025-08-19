@@ -178,7 +178,6 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 (use-package! org-gtd
   :after org
   :config
-  ;; This fixes a weird bug with org-gtd that prompts us about upgrading when we've always been on the newest version. It needs to be inserted early in the config flow
   (setq org-edna-use-inheritance t)
   (setq org-gtd-directory "~/org/gtd")
   (org-edna-mode)
