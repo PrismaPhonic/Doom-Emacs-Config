@@ -221,7 +221,7 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (setq org-gtd-areas-of-focus '("work" "coding" "music" "adventure" "family" "health" "home" "life"))
 
   ;; Add asking for area of focus when processing inbox
-  (setq org-gtd-organize-hooks '(org-set-tags-command org-gtd-set-area-of-focus)))
+  (setq org-gtd-organize-hooks '(org-set-tags-command org-gtd-set-area-of-focus org-set-effort org-priority)))
 
 (defun my/save-buffers-after-processing-inbox (&rest _)
   "Save all buffers after processing inbox."
