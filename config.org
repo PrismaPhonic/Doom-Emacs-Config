@@ -743,7 +743,8 @@ This fixes an issue I was having with getting emacs to find my gpg agent
 
 #+begin_src emacs-lisp
 
-(add-hook 'prog-mode 'rainbow-delimiters-mode)
+(use-package! rainbow-delimiters
+  :hook (prog-mode))
 
 #+end_src
 

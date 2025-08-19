@@ -456,7 +456,8 @@ If it's visible, close it. Otherwise, open in a horizontal split."
 (setq epa-pinentry-mode 'loopback)
 (setenv "GPG_TTY" (getenv "TTY"))
 
-(add-hook 'prog-mode 'rainbow-delimiters-mode)
+(use-package! rainbow-delimiters
+  :hook (prog-mode))
 
 (eshell-git-prompt-use-theme 'powerline)
 
