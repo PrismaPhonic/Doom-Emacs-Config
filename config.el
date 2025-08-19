@@ -582,6 +582,11 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (advice-add 'forge-create-pullreq :after
               (lambda (&rest _) (my/forge--setup-auto-pr-body))))
 
+(use-package! dired-open
+  :config
+  (setopt dired-open-extensions '(("mkv" . "mpv")
+                                  ("mp4" . "mpv"))))
+
 (use-package! slack
   :commands (slack-start)
   :bind (("C-c S K" . slack-stop)

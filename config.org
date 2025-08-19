@@ -903,6 +903,19 @@ This adds a hook that automatically injects the tip commit contents into the PR 
               (lambda (&rest _) (my/forge--setup-auto-pr-body))))
 
 #+END_SRC
+* File Management
+** Dired
+
+This configures dired to open certain filetypes automatically with specific programs. Otherwise these might be opened as raw bytes which isn't very useful.
+
+#+begin_src emacs-lisp
+
+(use-package! dired-open
+  :config
+  (setopt dired-open-extensions '(("mkv" . "mpv")
+                                  ("mp4" . "mpv"))))
+
+#+end_src
 
 * Slack Integration
 
