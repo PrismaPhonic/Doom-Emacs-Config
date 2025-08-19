@@ -444,6 +444,25 @@ Our custom engage view has the agenda for the day at the top, followed by a dail
 
 #+end_src
 
+Make sure tag filtering takes the gtd context into account so we pull up tags from our gtd tasks
+
+#+begin_src emacs-lisp
+
+(after! org
+  (defun pmf/gtd-agenda-filter-by-tag (&rest args)
+    "Run `org-agenda-filter-by-tag' inside `with-org-gtd-context'."
+    (interactive)
+    (org-gtd-core-prepare-agenda-buffers)
+    (with-org-gtd-context
+        (if (called-interactively-p 'interactive)
+            (call-interactively #'org-agenda-filter-by-tag)
+          (apply #'org-agenda-filter-by-tag args)))))
+
+(after! evil-org-agenda
+  (evil-define-key* 'motion evil-org-agenda-mode-map
+    "st" #'pmf/gtd-agenda-filter-by-tag))
+#+end_src
+
 ** Nicer Heading Bullets
 
 Doom uses [[https://github.com/minad/org-modern][org-modern]] if you add the =+pretty= flag to =init.el=. We can override settings to get custom bullet points on headers

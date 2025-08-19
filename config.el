@@ -300,6 +300,20 @@ If it's visible, close it. Otherwise, open in a horizontal split."
         (org-agenda nil "x")
         (goto-char (point-min)))))
 
+(after! org
+  (defun pmf/gtd-agenda-filter-by-tag (&rest args)
+    "Run `org-agenda-filter-by-tag' inside `with-org-gtd-context'."
+    (interactive)
+    (org-gtd-core-prepare-agenda-buffers)
+    (with-org-gtd-context
+        (if (called-interactively-p 'interactive)
+            (call-interactively #'org-agenda-filter-by-tag)
+          (apply #'org-agenda-filter-by-tag args)))))
+
+(after! evil-org-agenda
+  (evil-define-key* 'motion evil-org-agenda-mode-map
+    "st" #'pmf/gtd-agenda-filter-by-tag))
+
 (after! org-modern
   ;; Customize the symbols used for headlines
   (setq org-modern-hide-stars nil  ;; optional: show leading stars
