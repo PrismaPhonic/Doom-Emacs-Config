@@ -81,3 +81,5 @@
 (package! flycheck-posframe)
 
 (package! dired-open)
+
+(package! org-jira)
