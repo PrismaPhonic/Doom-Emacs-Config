@@ -650,7 +650,6 @@ This adds configuration for rust development setup. It also turns on clippy as o
   (setq rustic-compile-directory-method 'rustic-buffer-workspace)
 
   (after! lsp-mode
-
     (setq lsp-enable-semantic-highlighting t)
     (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
     (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
@@ -727,6 +726,33 @@ You'll need to create a personal access token in Gitlab, and then provide it in 
 
 #+END_SRC
 
+** Git time machine
+
+Doom emacs uses git-timemachine, which allows you to go back through history one commit at a time. Unfortunately, by default, line numbers are not enabled in time machine mode. This enables them.
+
+#+begin_src emacs-lisp
+
+(after! git-timemachine
+  ;; Remember & toggle line numbers only for the duration of git-timemachine-mode
+  (defvar-local pmf/git-timemachine--saved-lnum nil)
+
+  (defun pmf/git-timemachine-toggle-line-numbers ()
+    (if git-timemachine-mode
+        (progn
+          (setq pmf/git-timemachine--saved-lnum display-line-numbers)
+          (setq-local display-line-numbers 'relative)
+          (display-line-numbers-mode 1))
+
+      ;; restore previous state
+      (setq-local display-line-numbers pmf/git-timemachine--saved-lnum)
+      (if display-line-numbers
+          (display-line-numbers-mode 1)
+        (display-line-numbers-mode -1))))
+
+  (add-hook 'git-timemachine-mode-hook #'pmf/git-timemachine-toggle-line-numbers))
+
+#+end_src
+
 ** GPG Agent Fix
 
 This fixes an issue I was having with getting emacs to find my gpg agent
@@ -758,7 +784,6 @@ Eshell seems far more limited than vterm, but might be useful as a scheme repl, 
 (eshell-git-prompt-use-theme 'powerline)
 
 #+end_src
-
 
 ** Org-Jira Configuration
 

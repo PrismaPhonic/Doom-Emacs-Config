@@ -452,6 +452,25 @@ If it's visible, close it. Otherwise, open in a horizontal split."
           forge-gitlab-repository)    ; CLASS
         forge-alist))
 
+(after! git-timemachine
+  ;; Remember & toggle line numbers only for the duration of git-timemachine-mode
+  (defvar-local pmf/git-timemachine--saved-lnum nil)
+
+  (defun pmf/git-timemachine-toggle-line-numbers ()
+    (if git-timemachine-mode
+        (progn
+          (setq pmf/git-timemachine--saved-lnum display-line-numbers)
+          (setq-local display-line-numbers 'relative)
+          (display-line-numbers-mode 1))
+
+      ;; restore previous state
+      (setq-local display-line-numbers pmf/git-timemachine--saved-lnum)
+      (if display-line-numbers
+          (display-line-numbers-mode 1)
+        (display-line-numbers-mode -1))))
+
+  (add-hook 'git-timemachine-mode-hook #'pmf/git-timemachine-toggle-line-numbers))
+
 (setq epa-pinentry-mode 'loopback)
 (setenv "GPG_TTY" (getenv "TTY"))
 
