@@ -408,21 +408,26 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (pmf/flycheck-posframe-simple-padding))
 
 (after! rustic
-  (setq +tree-sitter-hl-enabled-modes '(rust-mode))
-  (add-hook 'rust-mode-hook #'tree-sitter-mode)
-  (add-hook 'rust-mode-hook #'tree-sitter-hl-mode)
+  (setq rustic-format-on-save t)
 
-  (setq lsp-enable-semantic-highlighting t)
-  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-  (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
+  (setq rustic-rustfmt-args "+nightly") ;; needed for our custom formatting
 
-  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
-  (setq lsp-rust-clippy-preference "on")
+  (setq rustic-compile-directory-method 'rustic-buffer-workspace)
 
-  (defun my/rust-enable-format-on-save ()
-    (add-hook 'before-save-hook #'lsp-format-buffer nil t))
+  (after! lsp-mode
+    (setq lsp-format-buffer-on-save nil) ;; Don't let lsp format on save, prefer rustic
 
-  (add-hook 'rust-mode-hook #'my/rust-enable-format-on-save))
+    (setq lsp-enable-semantic-highlighting t)
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+    (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)
+
+    ;; These must come after semantic tokens gets set so they don't get clobbered
+    (setq +tree-sitter-hl-enabled-modes '(rustic-mode))
+    (add-hook 'rustic-mode-hook #'tree-sitter-mode)
+    (add-hook 'rustic-mode-hook #'tree-sitter-hl-mode)
+
+    (setq lsp-rust-analyzer-cargo-watch-command "clippy")
+    (setq lsp-rust-clippy-preference "on")))
 
 ;; Custom function to run evxcr for rust repl functionality
 (defun pmf/rust-evcxr-repl ()
