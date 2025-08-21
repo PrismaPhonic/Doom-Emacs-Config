@@ -408,15 +408,9 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (pmf/flycheck-posframe-simple-padding))
 
 (after! rustic
-  (setq rustic-format-on-save t)
-
-  (setq rustic-rustfmt-args "+nightly") ;; needed for our custom formatting
-
   (setq rustic-compile-directory-method 'rustic-buffer-workspace)
 
   (after! lsp-mode
-    (setq lsp-format-buffer-on-save nil) ;; Don't let lsp format on save, prefer rustic
-
     (setq lsp-enable-semantic-highlighting t)
     (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
     (add-hook 'lsp-mode-hook #'lsp-semantic-tokens-mode)

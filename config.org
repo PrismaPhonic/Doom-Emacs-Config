@@ -642,19 +642,14 @@ This customizes the flycheck popup tooltip (for lsp diagnostics) to be better st
 
 ** Rust Development Setup
 
-This adds configuration for rust development setup, including auto formatting all buffers on save. It also turns on clippy as our linter, which is somewhat aggressive, but I find useful for helping to improve our code quality.
+This adds configuration for rust development setup. It also turns on clippy as our linter, which is somewhat aggressive, but I find useful for helping to improve our code quality.
 
 #+BEGIN_SRC emacs-lisp
 
 (after! rustic
-  (setq rustic-format-on-save t)
-
-  (setq rustic-rustfmt-args "+nightly") ;; needed for our custom formatting
-
   (setq rustic-compile-directory-method 'rustic-buffer-workspace)
 
   (after! lsp-mode
-    (setq lsp-format-buffer-on-save nil) ;; Don't let lsp format on save, prefer rustic
 
     (setq lsp-enable-semantic-highlighting t)
     (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
