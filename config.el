@@ -314,6 +314,18 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   (evil-define-key* 'motion evil-org-agenda-mode-map
     "st" #'pmf/gtd-agenda-filter-by-tag))
 
+(after! org
+  (defun pmf/gtd-agenda-redo-all ()
+    "Run `org-agenda-redo-all' using `with-org-gtd-context'. This explicitly does not use the exhaustive prefix, and only applies to the current buffer"
+    (interactive)
+    (org-gtd-core-prepare-agenda-buffers)
+    (with-org-gtd-context
+        (org-agenda-redo-all))))
+
+(after! evil-org-agenda
+  (evil-define-key* 'motion evil-org-agenda-mode-map
+    "gr" #'pmf/gtd-agenda-redo))
+
 (after! org-modern
   ;; Customize the symbols used for headlines
   (setq org-modern-hide-stars nil  ;; optional: show leading stars
