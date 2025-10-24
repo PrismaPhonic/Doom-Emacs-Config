@@ -220,8 +220,20 @@ If it's visible, close it. Otherwise, open in a horizontal split."
   ;; Override the areas of focus with our own
   (setq org-gtd-areas-of-focus '("work" "coding" "music" "adventure" "health" "life" "spirit" "relationship" "photography"))
 
+  (defun org-gtd-set-tags-command ()
+      (unless (org-gtd-organize-type-member-p '(project-task trash knowledge quick-action))
+        (org-set-tags-command)))
+
+  (defun org-gtd-set-effort ()
+      (unless (org-gtd-organize-type-member-p '(project-task trash knowledge quick-action))
+        (org-set-effort)))
+
+  (defun org-gtd-priority ()
+      (unless (org-gtd-organize-type-member-p '(project-task trash knowledge quick-action))
+        (org-priority)))
+
   ;; Add asking for area of focus when processing inbox
-  (setq org-gtd-organize-hooks '(org-set-tags-command org-gtd-set-area-of-focus org-set-effort org-priority)))
+  (setq org-gtd-organize-hooks '(org-gtd-set-tags-command org-gtd-set-area-of-focus org-gtd-set-effort org-gtd-priority)))
 
 (defun my/save-buffers-after-processing-inbox (&rest _)
   "Save all buffers after processing inbox."

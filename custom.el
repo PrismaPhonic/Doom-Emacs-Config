@@ -17,7 +17,7 @@
      "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
      "7ec8fd456c0c117c99e3a3b16aaf09ed3fb91879f6601b1ea0eeaee9c6def5d9" default))
  '(org-agenda-files
-   '("~/.config/doom/config.org" "/home/pmfarr/org/calendar-beorg.org"
+   '("/home/pmfarr/.config/doom/config.org" "/home/pmfarr/org/calendar-beorg.org"
      "/home/pmfarr/org/reminders-beorg.org"))
  '(package-selected-packages '(xclip))
  '(smtpmail-smtp-server "smtp.gmail.com" t)
